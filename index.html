@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WebRTC with Socket.IO</title>
+
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,width=device-width">
+
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/adapter.js"></script>
+    <script src="./js/MyPeerConnection.js"></script>
+  </head>
+  <body>
+
+    <header>
+      <h3>Démo WebRTC - I3S/Wimmics V5</h3>
+    </header>
+  
+    
+
+    
+    <ul class="flex-container wrap">
+      
+
+
+        <section id="chat">
+        	
+          <li class="flex-item">
+            <input type="text" name="chatInput" id="chatInput" onkeyup="if (event.keyCode == 13) {sendChat(); return false;}">
+
+            <button id="sendChat" onclick="sendChat()" disabled>Send</button>
+            <HR/>
+            <div id='log' name='log' ondragover="dragOverHandler(event)" ondrop="dropHandler(event)"></div>
+            <br/>
+             <input type="file" name="fileInput" id="fileInput" onchange="sendFile(this.files)" disabled>
+         </li>
+
+        </section>
+      
+        <section id="myvideos">
+          
+          <li class="flex-item myvideo">
+              <h3> MyVideo </h3>
+              <video id="myVideo" autoplay="autoplay" controls muted="true"></video>
+              <button id="buttonShareWebcam" value='pending' onclick="shareWebcam()" disabled>Share my webcam</button>
+          </li>
+         </section> 
+
+
+         
+         <section class="yourvideos">
+          
+          <li class="flex-item yourvideo">
+              <h3> YourVideo </h3>
+              <video id="yourVideo" autoplay="autoplay" controls muted="true"></video>
+          </li>
+
+         </section>
+
+         <section class="yourvideos">
+
+          <li class="flex-item yourvideo">
+              <h3> YourVideo 2 </h3>
+              <video id="myVideo2" autoplay="autoplay" controls muted="true"></video>
+          </li>
+
+         </section>
+         
+         <section class="yourvideos">
+        
+          <li class="flex-item yourvideo">
+              <h3> YourVideo 3 </h3>
+              <video id="yourVideo3" autoplay="autoplay" controls muted="true"></video>
+          </li>
+
+        </section>
+        
+        <section class="yourvideos">
+          
+          <li class="flex-item yourvideo">
+              <h3> YourVideo 4 </h3>
+              <video id="yourVideo4" autoplay="autoplay" controls muted="true"></video>
+          </li>
+
+        </section>
+  
+    
+          <!--
+          <section id="video2">
+            <video id="yourVideo2" autoplay="autoplay" controls muted="true"></video>
+            <video id="myVideo2" autoplay="autoplay" controls muted="true"></video>
+          </section>
+          -->
+
+
+        <!--
+          <section id="screen">
+            <video id="yourScreen" autoplay="autoplay" controls muted="true"></video>
+            <video id="myScreen" autoplay="autoplay" controls muted="true"></video>
+          </section>
+          -->
+
+        <!--
+        <section id="buttons">
+          
+          <li class="flex-item">
+          <button id="buttonShareWebcam" value='pending' onclick="shareWebcam()" disabled>Share my webcam</button>
+          <button id="buttonShareScreen" onclick="shareScreen()" disabled>Share my screen</button>
+          </li>
+        
+        </section>
+        -->
+
+    
+        <!--
+        <section id="helpScreenSharing">
+           
+           <li class="flex-item">
+
+            <img id="imgHelp" src="./img/icon_help.gif">
+            <div id="textHelp">
+              Currently, only Chrome (desktop version) supports screen sharing.<br />
+              To enable screen sharing, follow these steps and/or see <a href="https://www.youtube.com/watch?v=ZCatVxcyEpI">Explanatory video</a><br />
+              <ol>
+                <li>Open a new tab</li>
+                <li>Go to chrome://flags/#enable-usermedia-screen-capture</li>
+                <li>Click on enable</li>
+                <li>Restart Chrome</li>
+              </ol>
+            </div>
+        
+          </li>
+        
+        </section>
+        -->
+
+    </ul>
+
+    <script src="./js/script.js"></script>
+
+  </body>
+</html>

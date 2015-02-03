@@ -1,0 +1,16 @@
+{
+  "name": "mypeerconnection",
+  "subdomain": "mypeerconnection",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "version": "0.0.0-3",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "node-static": "~0.7.1",
+    "express": "^4.4.5",
+    "socket.io": "^1.0.6"
+  }
+}
