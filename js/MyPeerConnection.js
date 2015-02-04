@@ -485,6 +485,7 @@ console.log('MyPeerConnection()');
 		return {
 			// Create a RTCPeerConnection with event forwarding after creation
 	    	createConnection : function() {
+				console.log('createConnection() > Create a RTCPeerConnection with event forwarding after creation');
 				connection = new RTCPeerConnection({iceServers:serversList}, {optional:peerConnectionOptions});
 				this.setOnicecandidate();
 				this.setOnaddstream();
@@ -526,6 +527,7 @@ console.log('MyPeerConnection()');
 	    	//	Set RTCPeerConnection events
 	    	setOnicecandidate : function() {
 				connection.onicecandidate = function(event) {
+					console.log('setOnicecandidate() > Set RTCPeerConnection events');
 					if (event.candidate == null) {  // If receives a null candidate, do nothing
 						console.log('Receive null candidate');
 						return; 
@@ -553,14 +555,18 @@ console.log('MyPeerConnection()');
 
 	    	setOnaddstream : function() {
 	    		connection.onaddstream = function(event) {
+					console.log('setOnaddstream() >> ');
 					connectionEtablished = true;
 					if (receiveWebcam > receiveScreen) {
+						console.log('>> receiveWebcam > receiveScreen');
 						yourWebcamStream = event.stream; // Get stream
 						attachMediaStream(yourWebcam, yourWebcamStream); // From adapter.js. Attach yourWebcamStream to yourWebcam
 						receiveWebcam = 0; // Webcam leaves queue
 						ptrOnReceiveWebcamSuccess(); // Call the success pointer
+						
 					}
 					else if (receiveScreen > receiveWebcam) {
+						console.log('>> receiveScreen > receiveWebcam');
 						yourScreenStream = event.stream;
 						attachMediaStream(yourScreen, yourScreenStream);
 						receiveScreen = 0;
@@ -575,13 +581,17 @@ console.log('MyPeerConnection()');
 	    		var ptrCreateChatOffer = this.createChatOffer;
 	    		//	Firefox does not support this event
 	    		connection.onnegotiationneeded = function() {
+	    			console.log('onnegotiationneeded() >>');
 					if (webcamNegotiationNeeded) {
+						console.log('>> webcamNegotiationNeeded');
 						ptrCreateWebcamOffer();
 					}
 					else if (screenNegotiationNeeded) {
+						console.log('>> screenNegotiationNeeded');
 						ptrCreateScreenOffer();
 					}
 					else if (chatNegotiationNeeded) {
+						console.log('>> chatNegotiationNeeded');
 						ptrCreateChatOffer();
 					}
 				}
@@ -594,23 +604,28 @@ console.log('MyPeerConnection()');
 
 	    	setOniceconnectionstatechange : function() {
 	    		connection.oniceconnectionstatechanged = function(event) {
-	    			console.log('oniceconnectionstatechanged : ' + event.target.iceConnectionState);
+	    			console.log('setOniceconnectionstatechange() >>');
+	    			console.log('>> oniceconnectionstatechanged : ' + event.target.iceConnectionState);
 	    		}
 	    	},
 
 	    	setOnsignalingstatechange : function() {
+	   			
 	   			connection.onsignalingstatechange = function(event) {
+	   				console.log('onsignalingstatechange() >>');
 	   				if (browserName == 'Chrome') {
-						console.log('onsignalingstatechange : ' + event.target.signalingState);
+						console.log('>> onsignalingstatechange : ' + event.target.signalingState);
 	   				}
 					else {
-						console.log('onsignalingstatechange : ' + JSON.stringify(event));
+						console.log('>> onsignalingstatechange : ' + JSON.stringify(event));
 					}
 				};
 	    	},
 
 	    	setOndataChannel : function() {
+	    		console.log('setOndataChannel() >>');
 	    		connection.ondatachannel = function(event) {
+					console.log('>> ptrOnReceiveDataChannelSuccess()');
 					dataChannel = event.channel;
 					ptrOnReceiveDataChannelSuccess();
 				};

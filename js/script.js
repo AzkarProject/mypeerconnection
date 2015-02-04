@@ -424,16 +424,19 @@ function onErrorChannel(error) {
 function getPeerConnectionServers() {
 	peerConnectionServer = new Array();
 	peerConnectionServer.push({url: 'stun:stun.l.google.com:19302'});
+	console.log('getPeerConnectionServers() '+peerConnectionServer);
 	return peerConnectionServer;
 }
 
 function getPeerConnectionOptions() {
 	peerConnectionOptions = new Array();
+	console.log('getPeerConnectionOptions() ');
 	return peerConnectionOptions;
 }
 
 function getDataChannelOptions () {
 	dataChannelOptions = {reliable: false};
+	console.log('getDataChannelOptions() ');
 	return dataChannelOptions;
 }
 
