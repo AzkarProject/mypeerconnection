@@ -485,24 +485,37 @@ console.log('MyPeerConnection()');
 		return {
 			// Create a RTCPeerConnection with event forwarding after creation
 	    	createConnection : function() {
+				
 				console.log('createConnection() > Create a RTCPeerConnection with event forwarding after creation');
 				connection = new RTCPeerConnection({iceServers:serversList}, {optional:peerConnectionOptions});
+				
+				console.log('@createconnection >>> this.setOnicecandidate();');
 				this.setOnicecandidate();
+				
+				console.log('@createconnection >>> this.setOnicecandidate();');
 				this.setOnaddstream();
+				
+				console.log('@createconnection >>> this.setOnnegotiationneeded();' );
 				this.setOnnegotiationneeded();
+				
+				
+				console.log('@createconnection >>> this.setOniceconnectionstatechange()');
 				this.setOniceconnectionstatechange();
+				
+				console.log('@createconnection >>> this.setOnsignalingstatechange()');
 				this.setOnsignalingstatechange();
+				
 
 				connection.onremovestream = function() {
 					console.log('onremovestream event not defined');
 				};
-
 				this.setOndataChannel();
 	    	},
 
 	    	//	Create a data channel with event forwarding after creation
 			//	ptrOnMessageChannel parameter is mandatory
 	    	createDataChannel : function(ptrOnMessageChannel, ptrOnOpenChannel, ptrOnCloseChannel, ptrOnErrorChannel) {
+				console.log('createDataChannel() > Create a data channel with event forwarding after creation');
 				if (dataChannelWaiting) {
 	    			chatNegotiationNeeded = true;
 	    		}

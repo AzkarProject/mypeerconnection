@@ -92,11 +92,16 @@ var app = express()
   , http = require('http')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server);
+// Add pour Heroku
+app.set('port', (process.env.PORT || 8080));
+
 app.use(express.static(__dirname + '/'));    
 app.get('/', function(req, res){
   res.sendfile(_dirname + '/index.html');
 });
-server.listen(8080);
+//server.listen(8080);
+server.listen(app.get('port'));
+
 /**/
 
 // ---------Code original Cedric -------------
