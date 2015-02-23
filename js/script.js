@@ -1,6 +1,11 @@
 var username = prompt("Please enter your nickname", "undefined");
 
-console.log('script.js >>> Bienvenue ' + username); // debugg
+console.log('script.js'); // debugg
+
+
+// Add titi: utilitaires de débugg
+var tool = new utils();
+// tool.testutils('script.js'); // OK
 
 var myPeerConnection;
 
@@ -28,12 +33,13 @@ var peerConnectionOptions;
 
 var browserSupportWebRTC = true;
 
-// Using socket.io -  Note titi: Bug nodejitsu >>>> Uncaught TypeError: object is not a function script.js:23 (anonymous function)
+// Using socket.io -  Note titi: Bug nodejitsu >>>> 
+// "Uncaught TypeError: object is not a function script.js:23 (anonymous function)"
 var socket = io();
 
 window.onload = function() {
-	console.log('window.onload()'); // debugg
-  
+	console.log('script.js > window.onload()'); // debugg
+  	//utils.	 ;// pour vérif...
 	myVideo = document.getElementById("myVideo");
 	yourVideo = document.getElementById("yourVideo");
 	myScreen = document.getElementById("myScreen");
@@ -50,6 +56,7 @@ window.onload = function() {
 	dataChannelOptions = getDataChannelOptions(); // Get data channel options
 
 	// Set handlers and videos elements. Can be call after initialize but before sharing
+	//utils.testutils();
 	MyPeerConnection.setAllVideosElements(myVideo, yourVideo, myScreen, yourScreen);
 	MyPeerConnection.setOnReceiveWebcam(receiveWebcamSuccess, receiveWebcamError);
 	MyPeerConnection.setOnReceiveScreen(receiveScreenSuccess, receiveScreenError);
@@ -86,7 +93,7 @@ function disconnectMe(text) {
 
 // If my interlocutor is disconnected
 function otherDisconnect() {
-	console.log('Receive disconnect');
+	//console.log('Receive disconnect');
 	MyPeerConnection.setSendMessage(sendMessageThroughSocket); // Pass all messages between the peers into data channel.
 
 	addMessageChannelToChatWithName('Server', 'Your friend is gone.');
@@ -273,7 +280,7 @@ function dropHandler(event) {
 	Webcam callback
 ********************/
 function webcamSuccess() {
-	console.log('Sending webcam success');
+	//console.log('Sending webcam success');
 
 	buttonShareWebcam.innerHTML = "Stop sharing my webcam";
 	buttonShareWebcam.onclick = stopSharingWebcam;
@@ -282,7 +289,7 @@ function webcamSuccess() {
 }
 
 function webcamError(error) {
-	console.error(error);
+	//console.error(error);
 
 	buttonShareWebcam.innerHTML = "Share my webcam";
 	buttonShareWebcam.onclick = shareWebcam;
@@ -307,19 +314,19 @@ function confirmReceiveWebcam() {
 
 // Automatic handle when I receive interlocutor's webcam
 function receiveWebcamSuccess() {
-	console.log('Receive webcam Success');
+	//console.log('Receive webcam Success');
 }
 
 // Automatic handle when an error occurs during interlocutor's webcam sharing
 function receiveWebcamError(error) {
-	console.error(error);
+	//console.error(error);
 }
 
 /******************
 	Screen callback
 *****************/
 function screenSuccess() {
-	console.log('Sending screen success');
+	//console.log('Sending screen success');
 
 	buttonShareScreen.innerHTML = "Stop sharing my screen";
 	buttonShareScreen.onclick = stopSharingScreen;
@@ -328,7 +335,7 @@ function screenSuccess() {
 }
 
 function screenError(error) {
-	console.error(message);
+	//console.error(message);
 
 	buttonShareScreen.innerHTML = "Share my screen";
 	buttonShareScreen.onclick = shareScreen;
@@ -350,22 +357,22 @@ function confirmReceiveScreen() {
 }
 
 function receiveScreenSuccess() {
-	console.log('Receive screen success');
+	//console.log('Receive screen success');
 }
 
 function receiveScreenError(error) {
-	console.error(error);
+	//console.error(error);
 }	
 
 /****************
 	Receive chat
 ****************/
 function receiveChatSuccess() {
-	console.log('Receive data channel success');
+	//console.log('Receive data channel success');
 }
 
 function receiveChatError(error) {
-	console.error(error);
+	//console.error(error);
 }
 
 /*********************
@@ -385,12 +392,12 @@ function receiveChat(message) {
 				MyPeerConnection.receiveMessage(json.type, json.message);
 			}
 			else {
-				console.log('Can not handle json.');
+				//console.log('Can not handle json.');
 			}
 		} 
 	}
 	catch(error) {
-		console.error(error);
+		//console.error(error);
 	}
 }
 
@@ -410,11 +417,11 @@ function onOpenChannel() {
 }
 
 function onCloseChannel() {
-	console.log('Close data channel');
+	//console.log('Close data channel');
 }
 
 function onErrorChannel(error) {
-	console.error(error);
+	//console.error(error);
 }
 
 /********************************
@@ -422,21 +429,38 @@ function onErrorChannel(error) {
 ********************************/
 
 function getPeerConnectionServers() {
+	// Note titi >>> WTF
+	// Pkoi déclarer une liste de serveurs stun ici et une autre ds mypeerconnection ?????????
 	peerConnectionServer = new Array();
 	peerConnectionServer.push({url: 'stun:stun.l.google.com:19302'});
-	console.log('getPeerConnectionServers() '+peerConnectionServer);
+	//tool.traceObjectDump(peerConnectionServer,'script. getPeerConnectionServers()');
+	//peerConnectionServer.push({url: 'stun:stun1.l.google.com:19302'});
+	//peerConnectionServer.push({url: 'stun:stun2.1.google.com:19302'}); 
+	//peerConnectionServer.push({url: 'stun:stun3.1.google.com:19302'});
+	//peerConnectionServer.push({url: 'stun:stun4.1.google.com:19302'});
+	// Ajout d'un serveur' TURN
+	// peerConnectionServer.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "louis%40mozilla.com"});
+	peerConnectionServer.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
+
+
+	debug = tool.stringObjectDump(peerConnectionServer,'script. getPeerConnectionServers()');
+	console.log(debug);
+
+
+
+	// console.log('getPeerConnectionServers() '+peerConnectionServer);
 	return peerConnectionServer;
 }
 
 function getPeerConnectionOptions() {
 	peerConnectionOptions = new Array();
-	console.log('getPeerConnectionOptions() ');
+	// console.log('getPeerConnectionOptions() ');
 	return peerConnectionOptions;
 }
 
 function getDataChannelOptions () {
 	dataChannelOptions = {reliable: false};
-	console.log('getDataChannelOptions() ');
+	// console.log('getDataChannelOptions() ');
 	return dataChannelOptions;
 }
 

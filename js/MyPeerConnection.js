@@ -1,10 +1,15 @@
 var MyPeerConnection = (function() {
 	
-console.log('MyPeerConnection()');
+	console.log('MyPeerConnection()');
 
 	/*****************************************************************
 		Private static fields
 	******************************************************************/
+	// Add titi: utilitaires de débugg
+	var tool = new utils();
+	// tool.testutils('myPeerConnection'); OK
+
+
 	var rtcPeerConnection = null;
 	var myWebcamRtcPeerConnection = null;
 	var myScreenRtcPeerConnection = null;
@@ -71,13 +76,14 @@ console.log('MyPeerConnection()');
 	var majorVersion = parseInt(navigator.appVersion,10);
 	var nameOffset,verOffset,ix;
 
+
 	/**********************************************************
 		Private static methods
 	**********************************************************/
 
 	//Browser detection : http://www.javascripter.net/faq/browsern.htm
 	var detectBrowser = function() {
-		console.log('detectBrowser()');
+		// console.log('detectBrowser()');
 		// For Opera : http://jsfiddle.net/9zxvE/383/
 		if (!!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) {
 			browserName = "Opera";
@@ -129,12 +135,12 @@ console.log('MyPeerConnection()');
 			}
 		}
 
-		console.log(browserName + ' detected. Version: ' + majorVersion);
+		//console.log(browserName + ' detected. Version: ' + majorVersion);
 	};
 
 	// Return constraints to offer/answer
 	var getConstraints = function() {
-		console.log('getConstraints()');
+		//console.log('getConstraints()');
 		var constraints = {
 			mandatory: {
 				OfferToReceiveAudio: true,
@@ -155,20 +161,15 @@ console.log('MyPeerConnection()');
 	// ------- PeerConnection.setOnnegotiationneeded.connection.onnegotiationneeded > MyPeerConnection.js:565 		
 	
 	var getVideoConstraints = function() {
-		console.log('getVideoConstraints()');
-		
+		//console.log('getVideoConstraints()');
 		var videoConstraints = {
 			    audio: true,
-			    video: true,
-			    
 			    video: {
 			        mandatory : {
 			            maxWidth    : 300,
 			            maxHeight   : 180  
 			        }
 			    }
-			    
-
 		};
 
 		return videoConstraints;
@@ -178,14 +179,14 @@ console.log('MyPeerConnection()');
 		Webcam callback
 	**************************/
 	var getWebcam = function() {
-		console.log('getWebcam()');
+		//console.log('getWebcam()');
 		//getUserMedia({"audio": true, "video": true}, gotWebcamCallback, errorGotWebcam);
 		getUserMedia(getVideoConstraints(), gotWebcamCallback, errorGotWebcam);
 
 	};
 
 	var gotWebcamCallback = function(stream) {
-		console.log('gotWebcamCallback()');
+		//console.log('gotWebcamCallback()');
 		myWebcamStream = stream;
 		attachMediaStream(myWebcam, myWebcamStream);
 		if (interlocutorBrowser == 'Firefox' || browserName == 'Firefox') {
@@ -198,7 +199,7 @@ console.log('MyPeerConnection()');
 	};
 
 	var errorGotWebcam = function(error) {
-		console.log('errorGotWebcam()');
+		//console.log('errorGotWebcam()');
 		throwOnWebcamErrorCallback("Error to webcam access : " + error);
 	};
 
@@ -206,19 +207,19 @@ console.log('MyPeerConnection()');
 		Screen callback
 	**********************/
 	var getScreen = function() {
-		console.log('getScreen()');
+		//console.log('getScreen()');
 		getUserMedia({"audio": false, "video": {mandatory: {chromeMediaSource: 'screen', maxWidth: window.screen.width, maxHeight: window.screen.height}}}, gotScreenCallback, errorGotScreen);
 	};
 
 	var gotScreenCallback = function(stream) {
-		console.log('gotScreenCallback()');
+		//console.log('gotScreenCallback()');
 		myScreenStream = stream;
 		attachMediaStream(myScreen, myScreenStream);
 		rtcPeerConnection.addScreen(myScreenStream);
 	};
 
 	var errorGotScreen = function(error) {
-		console.log('errorGotScreen()');
+		//console.log('errorGotScreen()');
 		throwOnScreenErrorCallback("Error to screen access : " + error);
 	};
 
@@ -323,6 +324,11 @@ console.log('MyPeerConnection()');
 
 	//	PeerConnection is a javascript object. He manage an RTCPeerConnection
 	var PeerConnection = function(listServers, optionsPeerConnection) {
+		// note titi: controle liste serveurs
+		// tool.testutils('listServers'); // OK
+		// tool.traceObjectDump(listServers, 'Mypeerconnection. var PeerConnection > listServers');
+		debug = tool.stringObjectDump(listServers, 'Mypeerconnection. var PeerConnection > listServers');
+		console.log(debug);
 		/*****************************************************************
 			Private object fields
 		*****************************************************************/
@@ -365,7 +371,7 @@ console.log('MyPeerConnection()');
 		};
 
 		var offerSetLocalDescriptionCallback = function() {
-			console.log('Set local description success.');
+			//console.log('Set local description success.');
 		};
 
 		var errorOfferSetLocalDescription = function(error) {
@@ -423,7 +429,7 @@ console.log('MyPeerConnection()');
 		};
 
 		var answerSetLocalDescriptionCallback = function(localDescription) {
-			console.log('Set answer local description success.');
+			//console.log('Set answer local description success.');
 		};
 
 		var errorAnswerSetLocalDescription = function(error) {
@@ -442,7 +448,7 @@ console.log('MyPeerConnection()');
 				Remote answer callback
 		***********************************/
 		var answerSetRemoteDescriptionCallback = function() {
-			console.log('Set answer description success.');
+			//console.log('Set answer description success.');
 			if (priorityWebcamCallback > priorityScreenCallback && priorityWebcamCallback > priorityChatCallback) {
 				throwOnWebcamSuccessCallback();
 			}
@@ -472,11 +478,11 @@ console.log('MyPeerConnection()');
 			Add ice candidate callback
 		******************************/
 		var addIceCandidateCallback = function() {
-			console.log('Add ice candidate success !');
+			//console.log('Add ice candidate success !');
 		};
 
 		var errorAddIceCandidate = function(error) {
-			console.error('Error when adding ice candidate : ' + JSON.stringify(error));
+			//console.error('Error when adding ice candidate : ' + JSON.stringify(error));
 		};
 
 		/*********************************************************************
@@ -486,28 +492,33 @@ console.log('MyPeerConnection()');
 			// Create a RTCPeerConnection with event forwarding after creation
 	    	createConnection : function() {
 				
-				console.log('createConnection() > Create a RTCPeerConnection with event forwarding after creation');
+				//console.log('createConnection() > Create a RTCPeerConnection with event forwarding after creation');
 				connection = new RTCPeerConnection({iceServers:serversList}, {optional:peerConnectionOptions});
 				
-				console.log('@createconnection >>> this.setOnicecandidate();');
+				// note titi WTF
+				// tool.traceObjectDump(serversList,'Mypeerconnection. createConnection > serversList');
+				debug = tool.stringObjectDump(serversList,'Mypeerconnection. createConnection > serversList');
+				console.log(debug);
+
+				//console.log('@createconnection >>> this.setOnicecandidate();');
 				this.setOnicecandidate();
 				
-				console.log('@createconnection >>> this.setOnicecandidate();');
+				//console.log('@createconnection >>> this.setOnicecandidate();');
 				this.setOnaddstream();
 				
-				console.log('@createconnection >>> this.setOnnegotiationneeded();' );
+				//console.log('@createconnection >>> this.setOnnegotiationneeded();' );
 				this.setOnnegotiationneeded();
 				
 				
-				console.log('@createconnection >>> this.setOniceconnectionstatechange()');
+				//console.log('@createconnection >>> this.setOniceconnectionstatechange()');
 				this.setOniceconnectionstatechange();
 				
-				console.log('@createconnection >>> this.setOnsignalingstatechange()');
+				//console.log('@createconnection >>> this.setOnsignalingstatechange()');
 				this.setOnsignalingstatechange();
 				
 
 				connection.onremovestream = function() {
-					console.log('onremovestream event not defined');
+					//console.log('onremovestream event not defined');
 				};
 				this.setOndataChannel();
 	    	},
@@ -515,7 +526,7 @@ console.log('MyPeerConnection()');
 	    	//	Create a data channel with event forwarding after creation
 			//	ptrOnMessageChannel parameter is mandatory
 	    	createDataChannel : function(ptrOnMessageChannel, ptrOnOpenChannel, ptrOnCloseChannel, ptrOnErrorChannel) {
-				console.log('createDataChannel() > Create a data channel with event forwarding after creation');
+				//console.log('createDataChannel() > Create a data channel with event forwarding after creation');
 				if (dataChannelWaiting) {
 	    			chatNegotiationNeeded = true;
 	    		}
@@ -540,16 +551,16 @@ console.log('MyPeerConnection()');
 	    	//	Set RTCPeerConnection events
 	    	setOnicecandidate : function() {
 				connection.onicecandidate = function(event) {
-					console.log('setOnicecandidate() > Set RTCPeerConnection events');
+					//console.log('setOnicecandidate() > Set RTCPeerConnection events');
 					if (event.candidate == null) {  // If receives a null candidate, do nothing
-						console.log('Receive null candidate');
+						//console.log('Receive null candidate');
 						return; 
 					}
 
 					// If one of the two browsers is Firefox and sharing is webcam or screen, needs to create a PeerConnection object-by-case
 					if ((type == 'webcam' || type == 'screen') && (interlocutorBrowser == 'Firefox' || browserName == 'Firefox')) {
 						if (caller == null) {
-							console.error('Caller is not defined. Use setCaller(bool) to set caller.');
+							//console.error('Caller is not defined. Use setCaller(bool) to set caller.');
 						}
 						else {
 							if (caller) {
@@ -568,10 +579,10 @@ console.log('MyPeerConnection()');
 
 	    	setOnaddstream : function() {
 	    		connection.onaddstream = function(event) {
-					console.log('setOnaddstream() >> ');
+					//console.log('setOnaddstream() >> ');
 					connectionEtablished = true;
 					if (receiveWebcam > receiveScreen) {
-						console.log('>> receiveWebcam > receiveScreen');
+						//console.log('>> receiveWebcam > receiveScreen');
 						yourWebcamStream = event.stream; // Get stream
 						attachMediaStream(yourWebcam, yourWebcamStream); // From adapter.js. Attach yourWebcamStream to yourWebcam
 						receiveWebcam = 0; // Webcam leaves queue
@@ -579,7 +590,7 @@ console.log('MyPeerConnection()');
 						
 					}
 					else if (receiveScreen > receiveWebcam) {
-						console.log('>> receiveScreen > receiveWebcam');
+						//console.log('>> receiveScreen > receiveWebcam');
 						yourScreenStream = event.stream;
 						attachMediaStream(yourScreen, yourScreenStream);
 						receiveScreen = 0;
@@ -594,17 +605,17 @@ console.log('MyPeerConnection()');
 	    		var ptrCreateChatOffer = this.createChatOffer;
 	    		//	Firefox does not support this event
 	    		connection.onnegotiationneeded = function() {
-	    			console.log('onnegotiationneeded() >>');
+	    			//console.log('onnegotiationneeded() >>');
 					if (webcamNegotiationNeeded) {
-						console.log('>> webcamNegotiationNeeded');
+						//console.log('>> webcamNegotiationNeeded');
 						ptrCreateWebcamOffer();
 					}
 					else if (screenNegotiationNeeded) {
-						console.log('>> screenNegotiationNeeded');
+						//console.log('>> screenNegotiationNeeded');
 						ptrCreateScreenOffer();
 					}
 					else if (chatNegotiationNeeded) {
-						console.log('>> chatNegotiationNeeded');
+						//console.log('>> chatNegotiationNeeded');
 						ptrCreateChatOffer();
 					}
 				}
@@ -617,28 +628,28 @@ console.log('MyPeerConnection()');
 
 	    	setOniceconnectionstatechange : function() {
 	    		connection.oniceconnectionstatechanged = function(event) {
-	    			console.log('setOniceconnectionstatechange() >>');
-	    			console.log('>> oniceconnectionstatechanged : ' + event.target.iceConnectionState);
+	    			//console.log('setOniceconnectionstatechange() >>');
+	    			//console.log('>> oniceconnectionstatechanged : ' + event.target.iceConnectionState);
 	    		}
 	    	},
 
 	    	setOnsignalingstatechange : function() {
 	   			
 	   			connection.onsignalingstatechange = function(event) {
-	   				console.log('onsignalingstatechange() >>');
+	   				//console.log('onsignalingstatechange() >>');
 	   				if (browserName == 'Chrome') {
-						console.log('>> onsignalingstatechange : ' + event.target.signalingState);
+						//console.log('>> onsignalingstatechange : ' + event.target.signalingState);
 	   				}
 					else {
-						console.log('>> onsignalingstatechange : ' + JSON.stringify(event));
+						//console.log('>> onsignalingstatechange : ' + JSON.stringify(event));
 					}
 				};
 	    	},
 
 	    	setOndataChannel : function() {
-	    		console.log('setOndataChannel() >>');
+	    		//console.log('setOndataChannel() >>');
 	    		connection.ondatachannel = function(event) {
-					console.log('>> ptrOnReceiveDataChannelSuccess()');
+					//console.log('>> ptrOnReceiveDataChannelSuccess()');
 					dataChannel = event.channel;
 					ptrOnReceiveDataChannelSuccess();
 				};
@@ -654,7 +665,7 @@ console.log('MyPeerConnection()');
 	    		}
 	    		else {
 	    			dataChannel.onmessage = function(event) {
-						console.error('Message receive but no handler is define. Use MyPeerConnection.setMessageChannel(*fonction).');
+						//console.error('Message receive but no handler is define. Use MyPeerConnection.setMessageChannel(*fonction).');
 					};
 	    		}
 	    	},
@@ -667,7 +678,7 @@ console.log('MyPeerConnection()');
 	    		}
 	    		else {
 					dataChannel.onopen = function() {
-						console.log('on open channel. Use MyPeerConnection.setOpenChannel(*fonction) for redefine.');
+						//console.log('on open channel. Use MyPeerConnection.setOpenChannel(*fonction) for redefine.');
 					};
 	    		}
 	    	},
@@ -682,7 +693,7 @@ console.log('MyPeerConnection()');
 	    		}
 	    		else {
 					dataChannel.onclose = function() {
-						console.log('on close channel. Use MyPeerConnection.setCloseChannel(*fonction) for redefine.');
+						//console.log('on close channel. Use MyPeerConnection.setCloseChannel(*fonction) for redefine.');
 					};
 	    		}
 	    	},
@@ -695,7 +706,7 @@ console.log('MyPeerConnection()');
 	    		}
 	    		else {
 					dataChannel.onerror = function(error) {
-						console.log('Use MyPeerConnection.setErrorChannel(*fonction) for redefine. on error channel : ' + error);
+						//console.log('Use MyPeerConnection.setErrorChannel(*fonction) for redefine. on error channel : ' + error);
 					};
 	    		}
 	    	},
@@ -820,7 +831,7 @@ console.log('MyPeerConnection()');
 
 	    	// Caller is a boolean to know who will begin the negotiations
 	    	setCaller : function(bool) {
-	    		console.log('Setting caller');
+	    		//console.log('Setting caller');
 	    		caller = bool;
 	    	},
 		};
@@ -841,6 +852,10 @@ console.log('MyPeerConnection()');
 	//		onError is called if an error was detected during initialization
 	publicMethods.initialize = function(listServers, optionsPeerConnection, sendMessage, ptrMyDisconnect, ptrOtherDisconnect, onError) {
 		console.log('initialize()');
+
+
+
+
 		detectBrowser();
 		if (browserName != 'Firefox' && browserName != 'Chrome' && browserName != 'Opera') {
 			if (onError) {
@@ -891,8 +906,23 @@ console.log('MyPeerConnection()');
 			}
 			return ;
 		}
+		
+		// Note titi liste des serveurs STUN (pas de TURN???? )
+		// WTF >>>>> Redondance avec le tableau peerConnectionServer !!!!!!
+		// serversList = listServers || (function(){var array = new Array(); array.push({url: 'stun:stun.l.google.com:19302'});return array;}());
+		serversList = listServers || (function(){
+													var array = new Array(); 
+													//array.push({url: 'stun:stun.l.google.com:19302'});
+													array.push({url: 'stun:stun1.l.google.com:19302'});
+													array.push({url: 'stun:stun2.1.google.com:19302'}); 
+													array.push({url: 'stun:stun3.1.google.com:19302'});
+													array.push({url: 'stun:stun4.1.google.com:19302'});
+													return array;
+												}());
+		/**/
+		debug = tool.stringObjectDump(serversList,'script. initialize() >> serversList = listServers');
+		console.log(debug);
 
-		serversList = listServers || (function(){var array = new Array(); array.push({url: 'stun:stun.l.google.com:19302'}); return array;}());
 		peerConnectionOptions = optionsPeerConnection || (function(){var array = new Array(); return array;}());
 		ptrSendMessage = sendMessage;
 		ptrMyDisconnection = ptrMyDisconnect || function(){};
@@ -1074,13 +1104,13 @@ console.log('MyPeerConnection()');
 	publicMethods.receiveMessage = function(type, message) {
 		switch(type) {
 			case 'numberOfConnections' : // When type is numberOfConnections, this is means the web socket server receives a new connection. 
-				console.log('Receive new connection : ' + message);
+				//console.log('Receive new connection : ' + message);
 				
         if (message == 1) { // If you are the first to log on, you wait
 					doOfferDataChannel = false;
 					priorityChatCallback = 0;
 					numberOfConnections = message;
-          console.log('you are the first to log on, you wait...');
+          //console.log('you are the first to log on, you wait...');
 				}
 				else if (message == 2) { // If two persons are connected, they exchange their browser.
 					numberOfConnections = message;
