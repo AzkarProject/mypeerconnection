@@ -96,7 +96,7 @@ var app = express()
   , io = require('socket.io').listen(server);
 
 // Add pour openshift
-ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP ||"127.0.0.1";
 port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080;
 
 app.set('port', port);
