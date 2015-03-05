@@ -96,8 +96,9 @@ var app = express()
   , io = require('socket.io').listen(server);
 
 // Add pour openshift
-// app.set('port', (process.env.PORT || 8080));
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+port      = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080;
+
 app.set('port', port);
 
 
@@ -106,13 +107,15 @@ app.use(express.static(__dirname + '/'));
 app.get('/', function(req, res){
   res.sendfile(_dirname + '/index.html');
 });
+
 //server.listen(8080);
-server.listen(app.get('port'));
+//erver.listen(app.get('port'));
 
 /**/
 
 // ---------Code original Cedric -------------
-io.on('connection', function(socket){
+//io.on('connection', function(socket){ >>> Manque le socket entrre io et on ???
+io.sockets.on('connection', function (socket) {  
 	numberOfConnections++;
 	io.sockets.emit('numberOfConnections', numberOfConnections);
 	socket.on('message', function(msg) {
@@ -125,4 +128,7 @@ io.on('connection', function(socket){
     	socket.broadcast.emit('disconnection', numberOfConnections);
   	});
 });
+
+
+server.listen(app.get('port'),ipaddress);
 /**/
