@@ -95,9 +95,9 @@ var app = express()
   , server = http.createServer(app)
   , io = require('socket.io').listen(server);
 
-// Add pour openshift et Heroku
+// Add pour openshift
 // app.set('port', (process.env.PORT || 8080));
-app.set('port', (process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080));
+app.set('port', (process.env.OPENSHIFT_NODEJS_PORT || 8080));
 
 
 
