@@ -56,7 +56,6 @@ window.onload = function() {
 	dataChannelOptions = getDataChannelOptions(); // Get data channel options
 
 	// Set handlers and videos elements. Can be call after initialize but before sharing
-	//utils.testutils();
 	MyPeerConnection.setAllVideosElements(myVideo, yourVideo, myScreen, yourScreen);
 	MyPeerConnection.setOnReceiveWebcam(receiveWebcamSuccess, receiveWebcamError);
 	MyPeerConnection.setOnReceiveScreen(receiveScreenSuccess, receiveScreenError);
@@ -65,6 +64,7 @@ window.onload = function() {
 	MyPeerConnection.beforeReceiveScreen(confirmReceiveScreen);
 
 	MyPeerConnection.initialize(peerConnectionServer, peerConnectionOptions, sendMessageThroughSocket, disconnectMe, otherDisconnect, onInitializeError); // MyPeerConnection initialization 
+	
 	if (browserSupportWebRTC) // If my browser is comptatible with webRTC...
 		MyPeerConnection.createDataChannel(receiveChat, onOpenChannel, onCloseChannel, onErrorChannel); // Automatic creation of a data channel 
 };
@@ -443,10 +443,10 @@ function getPeerConnectionServers() {
 	peerConnectionServer.push({url: "turn:numb.viagenie.ca", credential: "webrtcdemo", username: "temp20fev2015@gmail.com"});
 
 
-	debug = tool.stringObjectDump(peerConnectionServer,'script. getPeerConnectionServers()');
-	console.log(debug);
 
-
+	console.log('script.js > 1 getPeerConnectionServers() >> [listservers]');
+	//debug = tool.stringObjectDump(peerConnectionServer,'script. getPeerConnectionServers()');
+	//console.log(debug);
 
 	// console.log('getPeerConnectionServers() '+peerConnectionServer);
 	return peerConnectionServer;
@@ -454,13 +454,13 @@ function getPeerConnectionServers() {
 
 function getPeerConnectionOptions() {
 	peerConnectionOptions = new Array();
-	// console.log('getPeerConnectionOptions() ');
+	console.log('script.js > 2 getPeerConnectionOptions()');
 	return peerConnectionOptions;
 }
 
 function getDataChannelOptions () {
 	dataChannelOptions = {reliable: false};
-	// console.log('getDataChannelOptions() ');
+	console.log('script.js > 3 getDataChannelOptions()');
 	return dataChannelOptions;
 }
 

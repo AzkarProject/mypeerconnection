@@ -83,7 +83,7 @@ var MyPeerConnection = (function() {
 
 	//Browser detection : http://www.javascripter.net/faq/browsern.htm
 	var detectBrowser = function() {
-		// console.log('detectBrowser()');
+		console.log('MyPeerConnection.js > 10 initialize() > detectBrowser()');
 		// For Opera : http://jsfiddle.net/9zxvE/383/
 		if (!!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) {
 			browserName = "Opera";
@@ -327,8 +327,12 @@ var MyPeerConnection = (function() {
 		// note titi: controle liste serveurs
 		// tool.testutils('listServers'); // OK
 		// tool.traceObjectDump(listServers, 'Mypeerconnection. var PeerConnection > listServers');
-		debug = tool.stringObjectDump(listServers, 'Mypeerconnection. var PeerConnection > listServers');
-		console.log(debug);
+		// debug = tool.stringObjectDump(listServers, 'Mypeerconnection.js var PeerConnection > listServers');
+		// console.log(debug);
+		console.log('MyPeerConnection.js > 10 initialize() > PeerConnection([listservers])');
+
+
+
 		/*****************************************************************
 			Private object fields
 		*****************************************************************/
@@ -851,12 +855,10 @@ var MyPeerConnection = (function() {
 	//		ptrOtherDisconnect is called when another person was disconnected from server
 	//		onError is called if an error was detected during initialization
 	publicMethods.initialize = function(listServers, optionsPeerConnection, sendMessage, ptrMyDisconnect, ptrOtherDisconnect, onError) {
-		console.log('initialize()');
-
-
-
-
+		console.log('MyPeerConnection.js > 10 initialize([listServers])');
 		detectBrowser();
+
+
 		if (browserName != 'Firefox' && browserName != 'Chrome' && browserName != 'Opera') {
 			if (onError) {
 				onError(browserName + ' is not a compatible browser.');
@@ -920,8 +922,10 @@ var MyPeerConnection = (function() {
 													return array;
 												}());
 		/**/
-		debug = tool.stringObjectDump(serversList,'script. initialize() >> serversList = listServers');
-		console.log(debug);
+		
+		// debug = tool.stringObjectDump(serversList,'script. initialize() >> serversList = listServers');
+		// console.log(debug);
+
 
 		peerConnectionOptions = optionsPeerConnection || (function(){var array = new Array(); return array;}());
 		ptrSendMessage = sendMessage;
@@ -936,6 +940,7 @@ var MyPeerConnection = (function() {
 
 	//	Set pointers for all video elements
 	publicMethods.setAllVideosElements = function(myWebcamElement, yourWebcamElement, myScreenElement, yourScreenElement) {
+		console.log('MyPeerConnection.js > 4 setAllVideosElements()');
 		myWebcam = myWebcamElement || null;
 		yourWebcam = yourWebcamElement || null;
 		myScreen = myScreenElement || null;
@@ -1006,6 +1011,7 @@ var MyPeerConnection = (function() {
 	//		true if user accept to receive other webcam
 	//		false if user do not want receive other webcam
 	publicMethods.beforeReceiveWebcam = function(ptrFunction) {
+		console.log('MyPeerConnection.js > 8 beforeReceiveWebcam()');
 		ptrAskingReceiveWebcam = ptrFunction || function(){return true;};
 	};
 
@@ -1037,23 +1043,27 @@ var MyPeerConnection = (function() {
 	//		true if user accept to receive other screen
 	//		false if user do not want receive other screen
 	publicMethods.beforeReceiveScreen = function(ptrFunction) {
+		console.log('MyPeerConnection.js > 9 beforeReceiveScreen()');
 		ptrAskingReceiveScreen = ptrFunction || function(){return true;};
 	};
 
 	//	Event forwarding during connection creation with interlocutor's webcam
 	publicMethods.setOnReceiveWebcam = function(onSuccess, onError) {
+		console.log('MyPeerConnection.js > 5 setOnReceiveWebcam()');
 		ptrOnReceiveWebcamSuccess = onSuccess || function(){};
 		ptrOnReceiveWebcamError = onError || function(){};
 	};
 
 	//	Event forwarding during connection creation with interlocutor's screen
 	publicMethods.setOnReceiveScreen = function(onSuccess, onError) {
+		console.log('MyPeerConnection.js > 6 setOnReceiveScreen()');
 		ptrOnReceiveScreenSuccess = onSuccess || function(){};
 		ptrOnReceiveScreenError = onError || function(){};
 	};
 
 	//	Event forwarding during data channel creation		
 	publicMethods.setOnReceiveDataChannel = function(onSuccess, onError) {
+		console.log('MyPeerConnection.js > 7 setOnReceiveDataChannel()');
 		ptrOnReceiveDataChannelSuccess = onSuccess || function(){};
 		ptrOnReceiveDataChannelErrror = onError || function(){};
 	};
