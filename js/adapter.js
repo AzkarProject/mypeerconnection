@@ -19,7 +19,7 @@ if (navigator.mozGetUserMedia) {
   webrtcDetectedBrowser = "firefox";
 
   webrtcDetectedVersion =
-           parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1], 10);
+                  parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1]);
 
   // The RTCPeerConnection object.
   RTCPeerConnection = mozRTCPeerConnection;
@@ -41,24 +41,15 @@ if (navigator.mozGetUserMedia) {
     if (url_parts[0].indexOf('stun') === 0) {
       // Create iceServer with stun url.
       iceServer = { 'url': url };
-    } else if (url_parts[0].indexOf('turn') === 0) {
-      if (webrtcDetectedVersion < 27) {
-        // Create iceServer with turn url.
-        // Ignore the transport parameter from TURN url for FF version <=27.
-        var turn_url_parts = url.split("?");
-        // Return null for createIceServer if transport=tcp.
-        if (turn_url_parts[1].indexOf('transport=udp') === 0) {
-          iceServer = { 'url': turn_url_parts[0],
-                        'credential': password,
-                        'username': username };
-        }
-      } else {
-        // FF 27 and above supports transport parameters in TURN url,
-        // So passing in the full url to create iceServer.
-        iceServer = { 'url': url,
-                      'credential': password,
-                      'username': username };
-      }
+    } else if (url_parts[0].indexOf('turn') === 0 &&
+               (url.indexOf('transport=udp') !== -1 ||
+                url.indexOf('?transport') === -1)) {
+      // Create iceServer with turn url.
+      // Ignore the transport parameter from TURN url.
+      var turn_url_parts = url.split("?");
+      iceServer = { 'url': turn_url_parts[0],
+                    'credential': password,
+                    'username': username };
     }
     return iceServer;
   };
@@ -77,23 +68,19 @@ if (navigator.mozGetUserMedia) {
   };
 
   // Fake get{Video,Audio}Tracks
-  if (!MediaStream.prototype.getVideoTracks) {
-    MediaStream.prototype.getVideoTracks = function() {
-      return [];
-    };
-  }
+  MediaStream.prototype.getVideoTracks = function() {
+    return [];
+  };
 
-  if (!MediaStream.prototype.getAudioTracks) {
-    MediaStream.prototype.getAudioTracks = function() {
-      return [];
-    };
-  }
+  MediaStream.prototype.getAudioTracks = function() {
+    return [];
+  };
 } else if (navigator.webkitGetUserMedia) {
   console.log("This appears to be Chrome");
 
   webrtcDetectedBrowser = "chrome";
   webrtcDetectedVersion =
-         parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2], 10);
+             parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
 
   // Creates iceServer from the url for Chrome.
   createIceServer = function(url, username, password) {
@@ -103,10 +90,17 @@ if (navigator.mozGetUserMedia) {
       // Create iceServer with stun url.
       iceServer = { 'url': url };
     } else if (url_parts[0].indexOf('turn') === 0) {
-      // Chrome M28 & above uses below TURN format.
-      iceServer = { 'url': url,
-                    'credential': password,
-                    'username': username };
+      if (webrtcDetectedVersion < 28) {
+        // For pre-M28 chrome versions use old TURN format.
+        var url_turn_parts = url.split("turn:");
+        iceServer = { 'url': 'turn:' + username + '@' + url_turn_parts[1],
+                      'credential': password };
+      } else {
+        // For Chrome M28 & above use new TURN format.
+        iceServer = { 'url': url,
+                      'credential': password,
+                      'username': username };
+      }
     }
     return iceServer;
   };
@@ -134,6 +128,27 @@ if (navigator.mozGetUserMedia) {
   reattachMediaStream = function(to, from) {
     to.src = from.src;
   };
+
+  // The representation of tracks in a stream is changed in M26.
+  // Unify them for earlier Chrome versions in the coexisting period.
+  if (!webkitMediaStream.prototype.getVideoTracks) {
+    webkitMediaStream.prototype.getVideoTracks = function() {
+      return this.videoTracks;
+    };
+    webkitMediaStream.prototype.getAudioTracks = function() {
+      return this.audioTracks;
+    };
+  }
+
+  // New syntax of getXXXStreams method in M26.
+  if (!webkitRTCPeerConnection.prototype.getLocalStreams) {
+    webkitRTCPeerConnection.prototype.getLocalStreams = function() {
+      return this.localStreams;
+    };
+    webkitRTCPeerConnection.prototype.getRemoteStreams = function() {
+      return this.remoteStreams;
+    };
+  }
 } else {
   console.log("Browser does not appear to be WebRTC-capable");
 }
